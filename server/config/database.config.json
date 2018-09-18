@@ -1,6 +1,6 @@
 {
     "development": {
-        "url": "mongodb://localhost:27017/bootcamptodo"
+        "url": "mongodb://localhost:27017/testEscuela"
     },
     "test": {
         "url": "mongodb://<user>:<password>@<server>:<port>/bootcamptodo"

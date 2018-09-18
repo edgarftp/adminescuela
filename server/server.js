@@ -47,11 +47,10 @@ app.use(function(req, res, next) {
 // END CORS
 
 // ROUTES
-var todoRouter = require('./routes/todo.routes');
-app.use('/api', todoRouter);
 
-var authRouter = require('./routes/authRoutes');
-app.use('/auth', authRouter);
+var escuelaRouter = require('./routes/escuelaRoutes');
+app.use('/escuela', escuelaRouter);
+
 // END ROUTES
 
 // ROUTES ERROR HANDLER

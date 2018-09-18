@@ -9,18 +9,17 @@ import {
     Panel,
     ControlLabel,
     FormControl,
-    HelpBlock,
-    Form,
-    InputGroup
+    Form
 } from "react-bootstrap";
 
 import Card from "components/Card/Card.jsx";
 
-import Checkbox from "components/CustomCheckbox/CustomCheckbox.jsx";
+import Switch from "react-bootstrap-switch";
 import Button from "components/CustomButton/CustomButton.jsx";
-import Radio from "components/CustomRadio/CustomRadio.jsx";
 
 import { opciones } from "variables/Variables.jsx";
+
+import EscuelaAPI from "../../api/escuela";
 
 class Config extends Component {
     constructor(props) {
@@ -31,13 +30,40 @@ class Config extends Component {
             gradodsVal: "",
             aulasVal: "",
             campusVal: "",
+            conceptosVal: "",
+            periodicidad: false,
             singleSelect: opciones[0],
-            ciclos: ["2015/2016", "2016/2017", "2017/2018"],
+            ciclos: [],
             niveles: ["Maternal", "Kinder", "Primaria", "Secundaria", "Preparatoria"],
             grados: ["1ero", "2do", "3ero", "4to", "5to", "6to", "1 Sem", "2 Sem", "3 Sem", "4 Sem", "5 Sem", "6 Sem"],
             aulas: ["A-101"],
-            campus: ["Main Campus"]
+            campus: ["Main Campus"],
+            conceptos: [
+                { nombre: "Inscripción", periodicidad: false, monto: null },
+                { nombre: "Colegiatura", periodicidad: true, monto: null },
+                { nombre: "Cuota Anual", periodicidad: false, monto: null },
+                { nombre: "Cuota Padres", periodicidad: false, monto: null }
+            ]
         };
+    }
+
+    componentDidMount() {
+        this.loadCiclos();
+    }
+
+    loadCiclos = () => {
+        EscuelaAPI.getAllCiclos()
+            .then((ciclos) => {
+                //const arr = ciclos.sort((a, b) => parseFloat(a.ciclo.split("/")[0]) - parseFloat(b.ciclo.split("/")[0]));
+                this.setState({ ciclos: ciclos.data });
+            })
+            .catch(err => {
+                console.log("Error al cargar ciclos")
+            })
+    }
+
+    handleToggle = () => {
+        this.setState({ periodicidad: !this.state.periodicidad });
     }
 
     handleOnChange = (e) => {
@@ -54,13 +80,41 @@ class Config extends Component {
     handleSubmit = (loc) => {
         switch (loc) {
             case "ciclos":
-                this.setState({ ciclos: [...this.state.ciclos, this.state.ciclosVal] });
+                EscuelaAPI.addCiclo({
+                    ciclo: this.state.ciclosVal
+                })
+                    .then(ciclos => {
+                        console.log(ciclos);
+                        this.loadCiclos();
+                    })
+                    .catch(err => console.log(err));
                 this.setState({ ciclosVal: "" });
                 break;
 
             case "niveles":
                 this.setState({ niveles: [...this.state.niveles, this.state.nivelesVal] });
                 this.setState({ nivelesVal: "" });
+                break;
+            case "grados":
+                this.setState({ grados: [...this.state.grados, this.state.gradosVal] });
+                this.setState({ gradosVal: "" });
+                break;
+            case "campus":
+                this.setState({ campus: [...this.state.campus, this.state.campusVal] });
+                this.setState({ campusVal: "" });
+                break;
+            case "aulas":
+                this.setState({ aulas: [...this.state.aulas, this.state.aulasVal] });
+                this.setState({ aulasVal: "" });
+                break;
+            case "conceptos":
+                const nuevoConcepto = {
+                    nombre: this.state.conceptosVal,
+                    periodicidad: this.state.periodicidad
+                }
+                this.setState({ conceptos: [...this.state.conceptos, nuevoConcepto] });
+                this.setState({ conceptosVal: "" });
+                this.setState({ periodicidad: false });
                 break;
         }
     };
@@ -108,16 +162,18 @@ class Config extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {this.state.ciclos.map((prop, key) => {
-                                                var type = "";
-                                                key % 2 === 0 ? type = "" : type = "info"
-                                                return (
-                                                    <tr key={key} className={type}>
-                                                        <td>{key + 1}</td>
-                                                        <td key={key}>{prop}</td>
-                                                    </tr>
-                                                );
-                                            })}
+                                            {
+                                                 this.state.ciclos.map((prop, key) => {
+                                                    console.log("prop " + prop);
+                                                    var type = "";
+                                                    key % 2 === 0 ? type = "" : type = "info"
+                                                    return (
+                                                        <tr key={key} className={type}>
+                                                            <td>{key + 1}</td>
+                                                            <td key={key}>{prop.ciclo}</td>
+                                                        </tr>
+                                                    );
+                                                })}
                                         </tbody>
                                     </Table>
                                 </Form>
@@ -182,7 +238,7 @@ class Config extends Component {
                         </Panel.Title>
                     </Panel.Heading>
                     <Panel.Body collapsible>
-                    <Card
+                        <Card
                             title="Añadir Grados Académicos"
                             content={
                                 <form onSubmit={this.preventDefault}>
@@ -223,7 +279,7 @@ class Config extends Component {
                                 </form>
                             }
                         />
-                </Panel.Body>
+                    </Panel.Body>
                 </Panel>
                 <Panel eventKey="4">
                     <Panel.Heading>
@@ -232,7 +288,7 @@ class Config extends Component {
                         </Panel.Title>
                     </Panel.Heading>
                     <Panel.Body collapsible>
-                    <Card
+                        <Card
                             title="Añadir Campus"
                             content={
                                 <form onSubmit={this.preventDefault}>
@@ -273,7 +329,7 @@ class Config extends Component {
                                 </form>
                             }
                         />
-                </Panel.Body>
+                    </Panel.Body>
                 </Panel>
                 <Panel eventKey="5">
                     <Panel.Heading>
@@ -282,7 +338,7 @@ class Config extends Component {
                         </Panel.Title>
                     </Panel.Heading>
                     <Panel.Body collapsible>
-                    <Card
+                        <Card
                             title="Añadir Aulas"
                             content={
                                 <form onSubmit={this.preventDefault}>
@@ -323,10 +379,67 @@ class Config extends Component {
                                 </form>
                             }
                         />
-                </Panel.Body>
+                    </Panel.Body>
                 </Panel>
             </PanelGroup>
         );
+
+        const agregarConcepto = (
+            <Card
+                title="Añadir Conceptos de Pago"
+                content={
+                    <Form onSubmit={this.preventDefault}>
+                        <FormGroup>
+                            <ControlLabel>Nuevo Concepto de Pago</ControlLabel>
+                            <FormControl
+                                name="conceptos"
+                                onChange={this.handleOnChange}
+                                value={this.state.conceptosVal}
+                                onKeyUp={this.handleEnter}
+                                placeholder="Colegiatura"
+                                type="Text"
+                            />
+                            <br />
+                            <p>Periodicidad</p>
+                            <Switch
+                                onText="✔"
+                                offText="✘"
+                                value={this.state.periodicidad}
+                                onChange={this.handleToggle}
+                            />
+                        </FormGroup>
+                        <Button onClick={() => this.handleSubmit("conceptos")} bsStyle="info" fill>
+                            Submit
+                                                </Button>
+
+                        <Table responsive>
+                            <thead>
+                                <tr>
+                                    <th> #</th>
+                                    <th> Concepto </th>
+                                    <th> Periodicidad </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.conceptos.map((prop, key) => {
+                                    var type = "";
+                                    key % 2 === 0 ? type = "" : type = "info"
+                                    return (
+                                        <tr key={key} className={type}>
+                                            <td>{key + 1}</td>
+                                            <td>{prop.nombre}</td>
+                                            <td>{
+                                                prop.periodicidad ? "Mensual" : "Un solo pago"
+                                            }</td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </Table>
+                    </Form>
+                }
+            />
+        )
 
 
         return (
@@ -335,6 +448,12 @@ class Config extends Component {
                     <Row>
                         <Col md={12}>
                             <Card title="Configurar Escuela" content={defaultPanel} />
+                        </Col>
+                        <Col md={12}>
+                            <Card
+                                title="Conceptos de Pago"
+                                content={agregarConcepto}
+                            />
                         </Col>
                     </Row>
                 </Grid>

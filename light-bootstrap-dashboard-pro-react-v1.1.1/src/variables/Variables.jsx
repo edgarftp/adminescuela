@@ -704,6 +704,12 @@ var opciones = [
   { value: "au", label: "Aula" }
 ];
 
+var profesores= [
+  {id: 1, label: "Juan", value: "Juan" }, 
+  {id:2, label: "Pedro" , value: "Pedro" }, 
+  {id: 3, label: "Edgar" , value: "Edgar" }, 
+  {id: 4, label: "Jaime", value: "Jaime"  }]
+
 module.exports = {
   selectOptions, // For selets in ExtendedForms view
   events, // For calendar in Calendar view
@@ -719,5 +725,6 @@ module.exports = {
   dataBar,
   optionsBar,
   responsiveBar, // For charts (Dashboard view)
-  opciones
+  opciones,
+  profesores
 };

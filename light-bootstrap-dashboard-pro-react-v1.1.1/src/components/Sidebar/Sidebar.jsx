@@ -113,7 +113,7 @@ class Sidebar extends Component {
                   <li>
                     <a>
                       <span className="sidebar-mini">MP</span>
-                      <span className="sidebar-normal" onClick="/user-page">My Profile</span>
+                      <span className="sidebar-normal">My Profile</span>
                     </a>
                   </li>
                   <li>

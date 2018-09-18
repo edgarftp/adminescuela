@@ -46,6 +46,7 @@ class ValidationForms extends Component {
       type_destinationError: null
     };
   }
+
   handleEmailChange(event) {
     this.setState({
       email: event.target.value
