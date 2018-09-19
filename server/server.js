@@ -1,4 +1,5 @@
 const express = require("express");
+const createError = require ('http-errors');
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const logger = require('morgan');
@@ -69,7 +70,8 @@ app.use(function(err, req, res, next) {
   
     // render the error page
     res.status(err.status || 500);
-    res.json({ message: err.message });
+    console.log(err);
+    res.json({ message: err.message, error: JSON.stringify(err) });
   });
 
 // END ROUTES ERROR HANDLER

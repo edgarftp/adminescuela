@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 import {
     Grid,
     Row,
@@ -17,8 +18,6 @@ import Card from "components/Card/Card.jsx";
 import Switch from "react-bootstrap-switch";
 import Button from "components/CustomButton/CustomButton.jsx";
 
-import { opciones } from "variables/Variables.jsx";
-
 import EscuelaAPI from "../../api/escuela";
 
 class Config extends Component {
@@ -32,34 +31,31 @@ class Config extends Component {
             campusVal: "",
             conceptosVal: "",
             periodicidad: false,
-            singleSelect: opciones[0],
             ciclos: [],
-            niveles: ["Maternal", "Kinder", "Primaria", "Secundaria", "Preparatoria"],
-            grados: ["1ero", "2do", "3ero", "4to", "5to", "6to", "1 Sem", "2 Sem", "3 Sem", "4 Sem", "5 Sem", "6 Sem"],
-            aulas: ["A-101"],
-            campus: ["Main Campus"],
-            conceptos: [
-                { nombre: "Inscripción", periodicidad: false, monto: null },
-                { nombre: "Colegiatura", periodicidad: true, monto: null },
-                { nombre: "Cuota Anual", periodicidad: false, monto: null },
-                { nombre: "Cuota Padres", periodicidad: false, monto: null }
-            ]
+            niveles: [],
+            grados: [],
+            aulas: [],
+            campus: [],
+            conceptos: []
         };
     }
 
     componentDidMount() {
-        this.loadCiclos();
+        this.loadInfo();
     }
 
-    loadCiclos = () => {
-        EscuelaAPI.getAllCiclos()
-            .then((ciclos) => {
-                //const arr = ciclos.sort((a, b) => parseFloat(a.ciclo.split("/")[0]) - parseFloat(b.ciclo.split("/")[0]));
-                this.setState({ ciclos: ciclos.data });
-            })
-            .catch(err => {
-                console.log("Error al cargar ciclos")
-            })
+    loadInfo = () => {
+        EscuelaAPI.escuelaInfo()
+            .then(axios.spread((ciclos, niveles, grados, campus, aulas, conceptos) => {
+                this.setState({
+                    ciclos: ciclos.data,
+                    niveles: niveles.data,
+                    grados: grados.data,
+                    campus: campus.data,
+                    aulas: aulas.data,
+                    conceptos: conceptos.data
+                });
+            }));
     }
 
     handleToggle = () => {
@@ -83,38 +79,76 @@ class Config extends Component {
                 EscuelaAPI.addCiclo({
                     ciclo: this.state.ciclosVal
                 })
-                    .then(ciclos => {
-                        console.log(ciclos);
-                        this.loadCiclos();
-                    })
-                    .catch(err => console.log(err));
+                .then(ciclos => {
+                    console.log(ciclos);
+                    this.loadInfo();
+                })
+                .catch(err => console.log(err));
                 this.setState({ ciclosVal: "" });
                 break;
 
             case "niveles":
-                this.setState({ niveles: [...this.state.niveles, this.state.nivelesVal] });
+                EscuelaAPI.addNivel({
+                    nivel: this.state.nivelesVal
+                })
+                .then(nivel => {
+                    this.loadInfo();
+                })
+                .catch(err => console.log(err));
                 this.setState({ nivelesVal: "" });
                 break;
+
             case "grados":
-                this.setState({ grados: [...this.state.grados, this.state.gradosVal] });
+                EscuelaAPI.addGrado({
+                    grado: this.state.gradosVal
+                })
+                .then(grado => {
+                    this.loadInfo();
+                })
+                .catch(err => console.log(err));
                 this.setState({ gradosVal: "" });
                 break;
+
             case "campus":
-                this.setState({ campus: [...this.state.campus, this.state.campusVal] });
+                EscuelaAPI.addCampus({
+                    campus: this.state.campusVal
+                })
+                .then(campus => {
+                    this.loadInfo();
+                })
+                .catch(err => console.log(err));
                 this.setState({ campusVal: "" });
                 break;
+
             case "aulas":
-                this.setState({ aulas: [...this.state.aulas, this.state.aulasVal] });
+                EscuelaAPI.addAula({
+                    aula: this.state.aulasVal
+                })
+                .then(aula => {
+                    this.loadInfo();
+                })
+                .catch(err => console.log(err));
                 this.setState({ aulasVal: "" });
                 break;
+
             case "conceptos":
                 const nuevoConcepto = {
-                    nombre: this.state.conceptosVal,
+                    concepto: this.state.conceptosVal,
                     periodicidad: this.state.periodicidad
                 }
-                this.setState({ conceptos: [...this.state.conceptos, nuevoConcepto] });
+                EscuelaAPI.addConcepto({
+                    concepto: nuevoConcepto.concepto,
+                    periodicidad: nuevoConcepto.periodicidad
+                })
+                .then(concepto => {
+                    this.loadInfo();
+                })
+                .catch(err => console.log(err));
                 this.setState({ conceptosVal: "" });
                 this.setState({ periodicidad: false });
+                break;
+
+                default:
                 break;
         }
     };
@@ -151,8 +185,8 @@ class Config extends Component {
                                             type="Text"
                                         />
                                     </FormGroup>
-                                    <Button onClick={() => this.handleSubmit("ciclos")} bsStyle="info" fill>
-                                        Submit
+                                    <Button pullRight onClick={() => this.handleSubmit("ciclos")} bsStyle="info" fill>
+                                        Agregar
                                     </Button>
                                     <Table responsive>
                                         <thead>
@@ -163,8 +197,7 @@ class Config extends Component {
                                         </thead>
                                         <tbody>
                                             {
-                                                 this.state.ciclos.map((prop, key) => {
-                                                    console.log("prop " + prop);
+                                                this.state.ciclos.map((prop, key) => {
                                                     var type = "";
                                                     key % 2 === 0 ? type = "" : type = "info"
                                                     return (
@@ -220,7 +253,7 @@ class Config extends Component {
                                                 return (
                                                     <tr key={key} className={type}>
                                                         <td>{key + 1}</td>
-                                                        <td key={key}>{prop}</td>
+                                                        <td key={key}>{prop.nivel}</td>
                                                     </tr>
                                                 );
                                             })}
@@ -270,7 +303,7 @@ class Config extends Component {
                                                 return (
                                                     <tr key={key} className={type}>
                                                         <td>{key + 1}</td>
-                                                        <td key={key}>{prop}</td>
+                                                        <td key={key}>{prop.grado}</td>
                                                     </tr>
                                                 );
                                             })}
@@ -320,7 +353,7 @@ class Config extends Component {
                                                 return (
                                                     <tr key={key} className={type}>
                                                         <td>{key + 1}</td>
-                                                        <td key={key}>{prop}</td>
+                                                        <td key={key}>{prop.campus}</td>
                                                     </tr>
                                                 );
                                             })}
@@ -370,7 +403,7 @@ class Config extends Component {
                                                 return (
                                                     <tr key={key} className={type}>
                                                         <td>{key + 1}</td>
-                                                        <td key={key}>{prop}</td>
+                                                        <td key={key}>{prop.aula}</td>
                                                     </tr>
                                                 );
                                             })}
@@ -406,11 +439,12 @@ class Config extends Component {
                                 offText="✘"
                                 value={this.state.periodicidad}
                                 onChange={this.handleToggle}
+                                onKeyUp = {this.handleSpaceBar}
                             />
                         </FormGroup>
                         <Button onClick={() => this.handleSubmit("conceptos")} bsStyle="info" fill>
                             Submit
-                                                </Button>
+                        </Button>
 
                         <Table responsive>
                             <thead>
@@ -427,7 +461,7 @@ class Config extends Component {
                                     return (
                                         <tr key={key} className={type}>
                                             <td>{key + 1}</td>
-                                            <td>{prop.nombre}</td>
+                                            <td>{prop.concepto}</td>
                                             <td>{
                                                 prop.periodicidad ? "Mensual" : "Un solo pago"
                                             }</td>

@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const gruposSchema = new Schema({
-  grupo: { type: 'String', required: true, trim: true, unique: true },
-  aula: { type: 'String', trim: true },
+  grupo: { type: 'String', required: true, trim: true},
   ciclo: { type: Schema.Types.ObjectId, required: true, ref: 'Ciclos' },
   ciclo_name: { type: 'String', required: true, trim: true },
   nivel: { type: Schema.Types.ObjectId, required: true, ref: 'Niveles' },
@@ -17,10 +16,19 @@ const gruposSchema = new Schema({
   profesores: [{ type: Schema.Types.ObjectId, ref: 'Profesores' }],
   conceptos: [{
     _id: { type: Schema.Types.ObjectId, ref: 'Conceptos' },
-    nombre: {type: "String", required: true, trime:true},
+    concepto: {type: "String", required: true, trime:true},
     monto: { type: Number, required: true, trim: true },
     periodicidad: { type: Boolean, required: true, default: false } //false = un solo pago, true = mensual
   }]
 });
 
 module.exports = mongoose.model('Grupos', gruposSchema);
+
+/*
+nombre: "tabla 5' barrote w/e"
+producto: {type: Schema.objectId, ref: "articulos"}
+produccion: [{
+  insumo: {type: Schema.obje.......},
+  qty: 
+}];
+*/

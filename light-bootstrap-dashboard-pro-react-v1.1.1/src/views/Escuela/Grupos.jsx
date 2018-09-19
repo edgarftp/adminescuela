@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 import {
     Grid,
     Row,
@@ -13,15 +14,17 @@ import Select from "react-select";
 import Button from "components/CustomButton/CustomButton.jsx";
 import Switch from "react-bootstrap-switch";
 
+import EscuelaAPI from "../../api/escuela";
+
 class RegularForms extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            ciclos: [{ label: "2015/2016" }, { label: "2016/2017" }, { label: "2017/2018" }, { label: "2018/2019" }],
-            niveles: [{ label: "Maternal" }, { label: "Kinder" }, { label: "Primaria" }, { label: "Secundaria" }],
-            grados: [{ label: "1ero" }, { label: "2d0" }, { label: "3ero" }, { label: "4to" }],
-            campus: [{ label: "Main Campus" }],
-            aulas: [{ label: "A-101" }, { label: "A-102" }, { label: "A-103" }, { label: "A-104" }],
+            ciclos: [],
+            niveles: [],
+            grados: [],
+            campus: [],
+            aulas: [],
             profesores: [{ id: 1, label: "Juan", value: "Juan" }, { id: 2, label: "Pedro", value: "Pedro" }, { id: 3, label: "Edgar", value: "Edgar" }, { id: 4, label: "Jaime", value: "Jaime" }],
             grupos: [],
             grupo: {
@@ -34,24 +37,90 @@ class RegularForms extends Component {
                 grupoVal: "",
                 conceptos: null
             },
-            conceptos: [
-                { nombre: "Inscripción", periodicidad: false, monto: null, seleccionar: true },
-                { nombre: "Colegiatura", periodicidad: true, monto: null, seleccionar: true },
-                { nombre: "Cuota Anual", periodicidad: false, monto: null, seleccionar: true },
-                { nombre: "Cuota Padres", periodicidad: false, monto: null, seleccionar: true }
-            ]
+            conceptos: []
         };
+    }
+
+    componentDidMount(){
+        this.loadInfo();
+        this.loadGrupos();
     }
 
     componentDidUpdate(prevProps, prevState) {
        if(this.state.grupo.conceptos !== prevState.grupo.conceptos){
-            const newGrupos = [...this.state.grupos, this.state.grupo];
-            this.setState({ grupos: newGrupos });
+           console.log(this.state.grupo.conceptos);
+           const newGrupo = {
+                grupo: this.state.grupo.grupoVal,
+                ciclo: this.state.grupo.ciclosOpt._id,
+                ciclo_name: this.state.grupo.ciclosOpt.ciclo,
+                nivel: this.state.grupo.nivelesOpt._id,
+                nivel_name: this.state.grupo.nivelesOpt.nivel,
+                grado: this.state.grupo.gradosOpt._id,
+                grado_name: this.state.grupo.gradosOpt.grado,
+                campus: this.state.grupo.campusOpt._id,
+                campus_name: this.state.grupo.campusOpt.campus,
+                aula: this.state.grupo.aulasOpt._id,
+                aula_name: this.state.grupo.aulasOpt.aula,
+                conceptos: this.state.grupo.conceptos
+            };
+
+            console.log(newGrupo);
+            EscuelaAPI.addGrupo({grupo: newGrupo})
+            .then(grupo => {
+                console.log(grupo);
+                this.loadGrupo();
+            })
+            .catch(err => console.log(err));
        }
-       if(this.state.grupos !== prevState.grupos){
-           console.log(this.state.grupos);
-       }
+
+       if(this.state.grupo.ciclosOpt !== prevState.grupo.ciclosOpt){
+    }
     };
+
+    loadInfo = () => {
+        EscuelaAPI.escuelaInfo()
+        .then(axios.spread((ciclos, niveles, grados, campus, aulas, conceptos) => {
+            const labeledCiclo = this.addLabel(ciclos.data, "ciclo");
+            const labeledNivel = this.addLabel(niveles.data, "nivel");
+            const labeledGrado = this.addLabel(grados.data, "grado");
+            const labeledCampus = this.addLabel(campus.data, "campus");
+            const labeledAula = this.addLabel(aulas.data, "aula");
+            const labeledConceptos = this.addLabel(conceptos.data, "conceptos");
+
+            this.setState({
+                ciclos: labeledCiclo,
+                niveles: labeledNivel,
+                grados: labeledGrado,
+                campus: labeledCampus,
+                aulas: labeledAula,
+                conceptos: labeledConceptos
+            });
+            
+        }));
+    }
+
+    loadGrupos = () => {
+        EscuelaAPI.getAllGrupos()
+        .then(grupos =>  {
+            console.log(grupos.data);
+            this.setState({grupos: grupos.data});
+        })
+        .catch (err => console.log(err));
+    }
+
+    addLabel = (arr, name) => {
+        if(name !== "conceptos"){
+            return arr.map(obj => {
+                const newObj = {...obj, label: obj[name]};
+                return newObj
+            })
+        } else {
+            return arr.map(obj => {
+                const newObj = {...obj, seleccionar: true};
+                return newObj
+            })
+        }
+    }
 
     handleOnChange = (e) => {
         if (e.target.name === "grupos") {
@@ -81,8 +150,10 @@ class RegularForms extends Component {
 
     handleSubmit = (e) => {
         const conceptos = this.state.conceptos.filter(concepto => concepto.seleccionar);
+        console.log(conceptos);
         const newObj = {...this.state.grupo};
         newObj.conceptos = conceptos;
+        console.log(newObj);
         this.setState({grupo: newObj});   
         //componentDidUpdate se encargar de agregar el nuevo grupo;
     };
@@ -241,7 +312,7 @@ class RegularForms extends Component {
                                         <td>
                                             <FormControl
                                                 name={prop.nombre}
-                                                id={key}
+                                                id={key.toString()}
                                                 onChange={this.handleOnChange}
                                                 value={prop.value}
                                                 placeholder="2000.00"
