@@ -50,7 +50,14 @@ app.use(function(req, res, next) {
 // ROUTES
 
 var escuelaRouter = require('./routes/escuelaRoutes');
+var personalRouter = require('./routes/personalRoutes');
+var alumnosRouter = require('./routes/alumnosRoutes');
+var userRouter = require('./routes/userRoutes');
+
 app.use('/escuela', escuelaRouter);
+app.use('/personal', personalRouter);
+app.use('/alumnos', alumnosRouter);
+app.use('/user', userRouter);
 
 // END ROUTES
 

@@ -3,9 +3,10 @@ const router = express.Router();
 
 // ESCUELA CONTROLLER
 const escuelaController = require('../controllers/escuelaController');
+const verifyToken = require('../controllers/check-auth');
 
 
-router.get('/get_ciclos', escuelaController.getAllCiclos);
+router.get('/get_ciclos',  escuelaController.getAllCiclos);
 
 router.post('/add_ciclo', escuelaController.addCiclo);
 

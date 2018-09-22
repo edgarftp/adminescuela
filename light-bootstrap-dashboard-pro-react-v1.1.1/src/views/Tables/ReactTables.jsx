@@ -193,8 +193,7 @@ class ReactTables extends Component {
                         filterable: false
                       }
                     ]}
-                    defaultPageSize={10}
-                    showPaginationTop
+                    showPaginationTop ={false}
                     showPaginationBottom={false}
                     className="-striped -highlight"
                   />

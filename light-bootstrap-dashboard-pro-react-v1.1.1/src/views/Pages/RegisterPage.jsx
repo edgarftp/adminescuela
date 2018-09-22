@@ -6,14 +6,31 @@ import Card from "components/Card/Card.jsx";
 import Button from "components/CustomButton/CustomButton.jsx";
 
 class RegisterPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: "",
+      lastname: "",
+      email: "",
+      password: ""
+    };
+}
+handleSubmit = (e) => {
+  console.log(e.target);
+}
+handleChange = (e,info) => {
+    
+  this.setState({[info]: e.target.value});
+}
+
   render() {
     return (
       <Grid>
         <Row>
           <Col md={8} mdOffset={2}>
             <div className="header-text">
-              <h2>Light Bootstrap Dashboard PRO</h2>
-              <h4>Register for free and experience the dashboard today</h4>
+              <h2>Bienvenido a EscuelApp</h2>
+              <h4>Registrate</h4>
               <hr />
             </div>
           </Col>
@@ -25,9 +42,8 @@ class RegisterPage extends Component {
                 </div>
               </Media.Left>
               <Media.Body>
-                <Media.Heading>Free Account</Media.Heading>
-                Here you can write a feature description for your dashboard, let
-                the users know what is the value that you give them.
+                <Media.Heading>Tu Cuenta Gratis</Media.Heading>
+                Administrar tu escuela será algo sencillo.
               </Media.Body>
             </Media>
             <Media>
@@ -37,9 +53,8 @@ class RegisterPage extends Component {
                 </div>
               </Media.Left>
               <Media.Body>
-                <Media.Heading>Awesome Performances</Media.Heading>
-                Here you can write a feature description for your dashboard, let
-                the users know what is the value that you give them.
+                <Media.Heading>Excelente Diseño</Media.Heading>
+                Diseño y sencillez para tener a tu disposición la informacion que requieres.
               </Media.Body>
             </Media>
             <Media>
@@ -49,45 +64,57 @@ class RegisterPage extends Component {
                 </div>
               </Media.Left>
               <Media.Body>
-                <Media.Heading>Global Support</Media.Heading>
-                Here you can write a feature description for your dashboard, let
-                the users know what is the value that you give them.
+                <Media.Heading>Continuo Desarrollo</Media.Heading>
+                EscuelApp esta constantemente mejorando para ti.
               </Media.Body>
             </Media>
           </Col>
           <Col md={4}>
-            <form>
+            <form >
               <Card
                 plain
                 content={
                   <div>
                     <FormGroup>
-                      <FormControl type="text" placeholder="Your First Name" />
-                    </FormGroup>
-                    <FormGroup>
-                      <FormControl type="text" placeholder="Your Last Name" />
-                    </FormGroup>
-                    <FormGroup>
-                      <FormControl type="text" placeholder="Company" />
-                    </FormGroup>
-                    <FormGroup>
-                      <FormControl type="email" placeholder="Enter Email" />
-                    </FormGroup>
-                    <FormGroup>
-                      <FormControl type="password" placeholder="Password" />
-                    </FormGroup>
-                    <FormGroup>
                       <FormControl
-                        type="password"
-                        placeholder="Password Confirmation"
-                      />
+                       value={this.state.name}
+                       onChange= {(e)=>this.handleChange(e, "name")}
+                       type="text" 
+                       name="name"
+                       placeholder="nombre" 
+                       
+                       />
+                    </FormGroup>
+                    <FormGroup>
+                      <FormControl 
+                      value={this.state.lastname}
+                      onChange= {(e)=>this.handleChange(e,"lastname")}
+                      type="text" 
+                      name="lastname"
+                      placeholder="apellido" />
+                    </FormGroup>
+                    <FormGroup>
+                      <FormControl 
+                      value={this.state.lastname}
+                      onChange= {(e)=>this.handleChange(e,"email")}
+                      type="email" 
+                      name="email"
+                      placeholder="Ingresa Correo Electronico" />
+                    </FormGroup>
+                    <FormGroup>
+                      <FormControl 
+                      value={this.state.lastname}
+                      onChange= {(e)=>this.handleChange(e,"password")}
+                      type="password" 
+                      name ="password"
+                      placeholder="Contraseña" />
                     </FormGroup>
                   </div>
                 }
                 ftTextCenter
                 legend={
-                  <Button wd fill neutral>
-                    Create Free Account
+                  <Button onClick= {(e) => this.handleSubmit(e)} wd fill neutral>
+                    Registrarse
                   </Button>
                 }
               />

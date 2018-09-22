@@ -2,13 +2,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const alumnosSchema = new Schema({
-  matricula: {type: 'Number', required: true, unique: true},
-  primerNombre: { type: 'String', required: true, trim: true},
-  segundoNombre: { type: 'String', trim: true},
-  apellidoPaterno: { type: 'String', required: true, trim: true},
-  apellidoMaterno: { type: 'String', trim: true},
+  matricula: {type: 'String', required: true, unique: true},
+  nombre: { type: 'String', required: true, trim: true},
+  apellidoP: { type: 'String', required: true, trim: true},
+  apellidoM: { type: 'String', trim: true},
   sexo: { type: 'Boolean', default: false }, // 0 (false) para masculino, 1 (true) para femenino
-  fechaNacimiento: {type:Date, required: true},
+  fechaNacimiento: {type:Date},
   curp: { type: 'String', trim: true},
   procedencia: { 
       escuela: {type: 'String', trim: true},

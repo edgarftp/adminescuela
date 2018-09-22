@@ -10,7 +10,6 @@ import HeaderLinks from "components/Header/HeaderLinks.jsx";
 // backgroundImage for Sidebar
 import image from "assets/img/full-screen-image-3.jpg";
 // image for avatar in Sidebar
-import avatar from "assets/img/default-avatar.png";
 // logo for sidebar
 import logo from "logo.svg";
 
@@ -24,12 +23,7 @@ class Sidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openAvatar: false,
-      openComponents: this.activeRoute("/components") !== "" ? true : false,
-      openForms: this.activeRoute("/forms") !== "" ? true : false,
-      openTables: this.activeRoute("/tables") !== "" ? true : false,
-      openMaps: this.activeRoute("/maps") !== "" ? true : false,
-      openPages: this.activeRoute("/pages") !== "" ? true : false,
+      openEscuela: this.activeRoute("/escuela") !== "" ? true : false,
       isWindows: navigator.platform.indexOf("Win") > -1 ? true : false,
       width: window.innerWidth
     };
@@ -89,50 +83,6 @@ class Sidebar extends Component {
           </a>
         </div>
         <div className="sidebar-wrapper" ref="sidebarWrapper">
-          <div className="user">
-            <div className="photo">
-              <img src={avatar} alt="Avatar" />
-            </div>
-            <div className="info">
-              <a
-                onClick={() =>
-                  this.setState({ openAvatar: !this.state.openAvatar })
-                }
-              >
-                <span>
-                  Tania Andrew
-                  <b
-                    className={
-                      this.state.openAvatar ? "caret rotate-180" : "caret"
-                    }
-                  />
-                </span>
-              </a>
-              <Collapse in={this.state.openAvatar}>
-                <ul className="nav">
-                  <li>
-                    <a>
-                      <span className="sidebar-mini">MP</span>
-                      <span className="sidebar-normal">My Profile</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a>
-                      <span className="sidebar-mini">EP</span>
-                      <span className="sidebar-normal">Edit Profile</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a>
-                      <span className="sidebar-mini">S</span>
-                      <span className="sidebar-normal">Settings</span>
-                    </a>
-                  </li>
-                </ul>
-              </Collapse>
-            </div>
-          </div>
-
           <ul className="nav">
             {/* If we are on responsive, we want both links from navbar and sidebar
                             to appear in sidebar, so we render here HeaderLinks */}
@@ -146,7 +96,7 @@ class Sidebar extends Component {
             {dashboardRoutes.map((prop, key) => {
               var st = {};
               st[prop["state"]] = !this.state[prop.state];
-              if (prop.collapse) {
+              if (prop.collapse && prop.name !== "Pages") {
                 return (
                   <li className={this.activeRoute(prop.path)} key={key}>
                     <a onClick={() => this.setState(st)}>
@@ -193,6 +143,7 @@ class Sidebar extends Component {
                 if (prop.redirect) {
                   return null;
                 } else {
+                  if(prop.name !== "Pages")
                   return (
                     <li className={this.activeRoute(prop.path)} key={key}>
                       <NavLink

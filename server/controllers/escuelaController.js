@@ -169,7 +169,8 @@ exports.addGrupo = (req, res) => {
         campus_name: req.body.grupo.campus_name,
         aula: req.body.grupo.aula,
         aula_name: req.body.grupo.aula_name,
-        conceptos: req.body.grupo.conceptos,
+        profesores: req.body.grupo.profesores,
+        conceptos: req.body.grupo.conceptos
     })
     .then(grupo => {
         console.log(grupo);

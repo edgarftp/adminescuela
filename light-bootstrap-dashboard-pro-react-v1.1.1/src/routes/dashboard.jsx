@@ -19,96 +19,35 @@ import VectorMap from "views/Maps/VectorMap.jsx";
 import Charts from "views/Charts/Charts.jsx";
 import Calendar from "views/Calendar/Calendar.jsx";
 import UserPage from "views/Pages/UserPage.jsx";
+import RegisterPage from "views/Pages/RegisterPage.jsx";
 
 import Config from "views/Escuela/Config.jsx";
 import Grupos from "views/Escuela/Grupos.jsx";
+import Profesores from "views/Escuela/Profesores.jsx";
+import Alumnos from "views/Alumnos/Alumnos.jsx";
 
 import pagesRoutes from "./pages.jsx";
 
-var pages = [
-  { path: "/user-page", name: "User Page", mini: "UP", component: UserPage }
-].concat(pagesRoutes);
 
 var dashboardRoutes = [
   {
     path: "/dashboard",
-    name: "Dashboard",
+    name: "Inicio",
     icon: "pe-7s-home",
     component: Dashboard
   },
   {
-    collapse: true,
-    path: "/components",
-    name: "Components",
-    state: "openComponents",
-    icon: "pe-7s-plugin",
-    views: [
-      {
-        path: "/components/buttons",
-        name: "Buttons",
-        mini: "B",
-        component: Buttons
-      },
-      {
-        path: "/components/grid-system",
-        name: "Grid System",
-        mini: "GS",
-        component: GridSystem
-      },
-      {
-        path: "/components/panels",
-        name: "Panels",
-        mini: "P",
-        component: Panels
-      },
-      {
-        path: "/components/sweet-alert",
-        name: "Sweet Alert",
-        mini: "SA",
-        component: SweetAlert
-      },
-      {
-        path: "/components/notifications",
-        name: "Notifications",
-        mini: "N",
-        component: Notifications
-      },
-      { path: "/components/icons", name: "Icons", mini: "I", component: Icons },
-      {
-        path: "/components/typography",
-        name: "Typography",
-        mini: "T",
-        component: Typography
-      }
-    ]
-  },
-  {
-    collapse: true,
-    path: "/forms",
-    name: "Forms",
-    state: "openForms",
-    icon: "pe-7s-note2",
-    views: [
-      {
-        path: "/forms/regular-forms",
-        name: "Regular Forms",
-        mini: "RF",
-        component: RegularForms
-      },
-      {
-        path: "/forms/extended-forms",
-        name: "Extended Forms",
-        mini: "EF",
-        component: ExtendedForms
-      },
-      {
-        path: "/forms/validation-forms",
-        name: "Validation Forms",
-        mini: "VF",
-        component: ValidationForms
-      },
-      { path: "/forms/wizard", name: "Wizard", mini: "W", component: Wizard }
-    ]
+    collapse:true,
+    path: "/pages",
+    name: "Pages",
+    state: "openPages",
+    icon: "pe-7s-settings",
+    views: [{
+      path: "/pages/singup",
+        name: "Sign Up",
+        mini: "SU",
+        component: RegisterPage
+    }]
   },
   {
     collapse: true,
@@ -128,78 +67,21 @@ var dashboardRoutes = [
         name: "Grupos",
         mini: "GP",
         component: Grupos
+      },
+      {
+        path: "/escuela/profesores",
+        name: "Profesores",
+        mini: "PR",
+        component: Profesores
       }
     ]
   },
   {
-    collapse: true,
-    path: "/tables",
-    name: "Tables",
-    state: "openTables",
-    icon: "pe-7s-news-paper",
-    views: [
-      {
-        path: "/tables/regular-tables",
-        name: "Regular Tables",
-        mini: "RT",
-        component: RegularTables
-      },
-      {
-        path: "/tables/extended-tables",
-        name: "Extended Tables",
-        mini: "ET",
-        component: ExtendedTables
-      },
-      {
-        path: "/tables/react-table",
-        name: "React Table",
-        mini: "RT",
-        component: ReactTables
-      }
-    ]
+    path: "/alumnos",
+    name: "Alumnos",
+    icon: "pe-7s-users",
+    component: Alumnos
   },
-  {
-    collapse: true,
-    path: "/maps",
-    name: "Maps",
-    state: "openMaps",
-    icon: "pe-7s-map-marker",
-    views: [
-      {
-        path: "/maps/google-maps",
-        name: "Google Maps",
-        mini: "GM",
-        component: GoogleMaps
-      },
-      {
-        path: "/maps/full-screen-maps",
-        name: "Full Screen Map",
-        mini: "FSM",
-        component: FullScreenMap
-      },
-      {
-        path: "/maps/vector-maps",
-        name: "Vector Map",
-        mini: "VM",
-        component: VectorMap
-      }
-    ]
-  },
-  { path: "/charts", name: "Charts", icon: "pe-7s-graph1", component: Charts },
-  {
-    path: "/calendar",
-    name: "Calendar",
-    icon: "pe-7s-date",
-    component: Calendar
-  },
-  {
-    collapse: true,
-    path: "/pages",
-    name: "Pages",
-    state: "openPages",
-    icon: "pe-7s-gift",
-    views: pages
-  },
-  { redirect: true, path: "/", pathTo: "/dashboard", name: "Dashboard" }
+  { redirect: true, path: "/", pathTo: "/pages/register", name: "Pages" }
 ];
 export default dashboardRoutes;
